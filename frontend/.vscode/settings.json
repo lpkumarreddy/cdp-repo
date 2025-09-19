@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDP Website</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Oswald:wght@400;700&family=Raleway:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
+
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Bootstrap and jQuery (Required for carousel) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" xintegrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous" />
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" xintegrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" xintegrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" xintegrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/6cd1346470.js" crossorigin="anonymous"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        heading: ['Poppins', 'sans-serif'],
+                        body: ['Raleway', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Poppins', 'sans-serif';
+            background-color: #f0f2f5;
+            padding-top: 70px;
+            padding-bottom: 80px;
+            transition: background-color 0.3s ease;
+        }
+
+        @media (min-width: 1024px) {
+            body {
+                padding-bottom: 0;
+            }
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section.active {
+            display: block;
+        }
+        
+        .auth-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+            animation: fadeIn 0.8s ease-in-out;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .auth-content {
+            background: #ffffff;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            max-width: 420px;
+            width: 100%;
+            padding: 2.5rem;
+            position: relative;
+        }
+        
+        .form-control input:focus+label,
+        .form-control input:not(:placeholder-shown)+label {
+            top: 0;
+            left: 0.5rem;
+            font-size: 0.75rem;
+            color: #3b82f6;
+            background: #ffffff;
+            padding: 0 0.5rem;
+            transform: translateY(-50%);
+        }
+
+        .navbar-base {
+            background: transparent;
+            transition: background-color 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .navbar-base.scrolled {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .desktop-nav a {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1rem;
+            color: #4a5568;
+            padding: 8px 16px;
+            margin: 0 5px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            text-decoration: none !important;
+        }
+
+        .desktop-nav a:hover,
+        .desktop-nav a.active {
+            background-color: #000;
+            color: white;
+        }
+
+        .mobile-nav {
+            background-color: white;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .mobile-nav a {
+            color: #718096;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-nav a.active {
+            color: #6366f1;
+            transform: scale(1.1);
+        }
+
+        .mobile-style {
+            font-size: 0.7rem;
+        }
+
+        .gradient-btn {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6);
+            color: white;
+            padding: 12px 32px;
+            border-radius: 9999px;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .gradient-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .gradient-btn:hover:not(:disabled) {
+            background: #000;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+        }
+
+        .content-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .section-title, .font-heading {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            color: #000000;
+            text-align: center;
+            margin-bottom: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .section-subtitle {
+            font-family: 'Raleway', sans-serif;
+            font-size: 1.1rem;
+            color: #475569;
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto 2.5rem auto;
+            transition: color 0.3s ease;
+        }
+        
+        .workshop-topic-logos {
+            height: 50px;
+            width: auto;
+            padding: 8px;
+            background-color: #f8f8f8;
+            border-radius: 8px;
+            border: 1px solid #eee;
+            transition: all 0.3s ease;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Registration Screen (Visible on first visit) -->
+    <div id="authScreen" class="auth-screen hidden">
+        <div class="auth-content">
+            <div class="text-center mb-6">
+                <h2 class="text-3xl font-bold font-heading text-black">Welcome to CDP</h2>
+                <p class="text-gray-600 mt-2">Register to begin your journey.</p>
+            </div>
+
+            <form id="cdpRegisterForm">
+                <div class="relative mb-4">
+                    <input type="text" id="regName" name="name" required class="w-full px-4 py-2 bg-gray-100 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-indigo-500 transition" placeholder="Full Name">
+                </div>
+                <div class="relative mb-4">
+                    <input type="email" id="regEmail" name="email" required class="w-full px-4 py-2 bg-gray-100 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-indigo-500 transition" placeholder="Email Address">
+                </div>
+                <div class="relative mb-4">
+                    <input type="tel" id="regPhone" name="phone" required class="w-full px-4 py-2 bg-gray-100 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-indigo-500 transition" placeholder="Phone Number">
+                </div>
+                <div class="relative mb-6">
+                    <input type="text" id="regLocation" name="location" required class="w-full px-4 py-2 bg-gray-100 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-indigo-500 transition" placeholder="Location">
+                </div>
+                <button type="submit" class="w-full gradient-btn">Register & Enter Site</button>
+                <p id="authMessage" class="text-center mt-4 text-sm"></p>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Main Website Content (Hidden on first visit) -->
+    <div id="websiteContent" class="hidden">
+        <!-- Mobile Navbar (< 1024px) -->
+        <nav class="mobile-nav navbar-base fixed-bottom d-block d-lg-none py-2">
+            <div class="container">
+                <div class="row">
+                    <div class="col-2 p-0 text-center"><a class="iconsofnav active" href="#HOME"><i class="fa-solid fa-house-crack text-xl"></i><br><span class="mobile-style">Home</span></a></div>
+                    <div class="col-2 p-0 text-center"><a class="iconsofnav" href="#MYJOURNEY"><i class="fa-solid fa-route text-xl"></i><br><span class="mobile-style">Journey</span></a></div>
+                    <div class="col-2 p-0 text-center"><a class="iconsofnav" href="#devgalaxy"><i class="fa-brands fa-staylinked text-xl"></i><br><span class="mobile-style">Galaxy</span></a></div>
+                    <div class="col-2 p-0 text-center"><a class="iconsofnav" href="#Workshops"><i class="fa-solid fa-gears text-xl"></i><br><span class="mobile-style">Workshops</span></a></div>
+                    <div class="col-2 p-0 text-center"><a class="iconsofnav" href="#PLACEMENTPRE"><i class="fa-solid fa-hand-holding-heart text-xl"></i><br><span class="mobile-style">Preps</span></a></div>
+                    <div class="col-2 p-0 text-center"><a class="iconsofnav" href="#PRACTICE"><i class="fa-solid fa-code text-xl"></i><br><span class="mobile-style">Practice</span></a></div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Desktop Navbar (>= 1024px) -->
+        <nav class="desktop-nav navbar-base fixed-top d-none d-lg-block py-2">
+            <div class="container mx-auto flex justify-center items-center">
+                <a class="iconsofnav992 active" href="#HOME">HOME</a>
+                <a class="iconsofnav992" href="#MYJOURNEY">My Journey</a>
+                <a class="iconsofnav992" href="#devgalaxy">Dev Galaxy</a>
+                <a class="iconsofnav992" href="#Workshops">Workshops</a>
+                <a class="iconsofnav992" href="#PLACEMENTPRE">Placement Prep</a>
+                <a class="iconsofnav992" href="#PRACTICE">Practice</a>
+            </div>
+        </nav>
+
+        <!-- Page Content -->
+        <main>
+            <section id="HOME" class="section active p-4 md:p-8">
+                <!-- Video Section -->
+                <div class="container mx-auto">
+                    <!-- Mobile Carousel -->
+                    <div id="homeCarousel" class="carousel slide d-block d-md-none mb-8" data-ride="carousel">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <video class="d-block w-100" autoplay muted loop playsinline><source src="https://res.cloudinary.com/djnscc5bg/video/upload/v1757266081/Black_and_White_Modern_Welcome_to_our_cdp_Video_b23321.mp4" type="video/mp4"></video>
+                            </div>
+                            <div class="carousel-item">
+                                <video class="d-block w-100" autoplay muted loop playsinline><source src="https://res.cloudinary.com/djnscc5bg/video/upload/v1757263957/Modern_Animated_Neutral_Thank_You_Video_f4zct4.mp4" type="video/mp4"></video>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Desktop Video -->
+                    <div class="d-none d-md-block mb-12">
+                        <video src="https://res.cloudinary.com/djnscc5bg/video/upload/v1757228660/Black_and_Orange_Modern_Welcome_to_My_Channel_Video_of_CDP_ywbnbs.mp4" autoplay loop muted class="w-100 rounded-xl shadow-lg"></video>
+                    </div>
+                </div>
+
+                <!-- Content Grid -->
+                <div class="container mx-auto">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch mb-8">
+                        <!-- Why CDP Card -->
+                        <div class="content-card p-6 flex flex-col items-center text-center">
+                            <img src="https://res.cloudinary.com/djnscc5bg/image/upload/v1757223867/CDP-Skillify-logo-removebg-preview_nc3f2z.png" class="h-24 w-auto mb-4" />
+                            <h2 class="text-2xl font-heading font-bold text-black">Why did we create CDP?</h2>
+                            <p class="text-gray-600 font-body leading-relaxed mt-2">
+                                "Because we know learning can be confusing, overwhelming, and expensive. Students need guidance, clarity, and encouragement—CDP is here to support you with free, trusted resources."
+                            </p>
+                        </div>
+                        <!-- O2O.agency Card -->
+                        <div class="content-card p-6 flex flex-col items-center text-center">
+                            <img src="https://res.cloudinary.com/djnscc5bg/image/upload/v1757223867/O2O_Agency_Brand_Logo-removebg-preview_j7h8dt.png" class="h-24 w-auto mb-4" />
+                            <h2 class="text-2xl font-heading font-bold text-black">O2O.agency</h2>
+                            <p class="text-gray-600 font-body leading-relaxed mt-2">
+                                “CDP, developed by O2O.agency, is a free learning platform that empowers students with the right skills and knowledge to thrive in today’s competitive landscape.”
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- New Update Card -->
+                    <div class="content-card p-6 lg:p-8">
+                        <!-- Text Content -->
+                        <div class="text-center">
+                            <h1 class="text-4xl font-heading font-extrabold text-black">NEW UPDATE</h1>
+                            <h4 class="text-xl font-heading font-semibold text-black mt-2">
+                                <i class="fa-solid fa-award mr-2 text-indigo-500"></i> Practical Learning. Real Impact.
+                            </h4>
+                            <p class="font-body text-gray-600 leading-relaxed mt-3 max-w-2xl mx-auto">
+                                Join our 180-minute hands-on workshop to dive deep into AWS, cybersecurity, data analytics, and cutting-edge AI tools.
+                            </p>
+                        </div>
+                        <!-- Image Content -->
+                        <div class="mt-6 flex justify-center flex-wrap gap-4">
+                            <img src="https://www.pngmart.com/files/23/Aws-Logo-PNG-Picture.png" class="workshop-topic-logos" title="AWS" />
+                            <img src="https://cdn-icons-png.flaticon.com/512/6783/6783360.png" class="workshop-topic-logos" title="Cybersecurity" />
+                            <img src="https://www.vhv.rs/dpng/d/467-4670884_analytics-icon-png-png-download-data-clipart-black.png" class="workshop-topic-logos" title="Data Analytics" />
+                            <img src="https://w7.pngwing.com/pngs/83/397/png-transparent-adobe-ai-illustrator-logo-logos-and-brands-icon-thumbnail.png" class="workshop-topic-logos" title="Generative AI" />
+                            <img src="https://registry.npmmirror.com/@lobehub/icons-static-png/latest/files/light/mcp.png" class="workshop-topic-logos" title="MCP" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container mx-auto py-8 lg:py-12">
+                    <iframe class="w-full max-w-4xl mx-auto aspect-video rounded-xl shadow-lg" src="https://www.youtube.com/embed/2e5UIJBvJwI?si=u1ualqtNUTWyVr0b" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
+            </section>
+            
+            <section id="MYJOURNEY" class="section p-4 md:p-8">
+                <div class="container mx-auto">
+                    <h1 class="section-title">My Journey</h1>
+                    <p class="section-subtitle">A guided path to help you learn and grow. Click the button below to start your personalized journey with our structured resources.</p>
+                    <div class="text-center mb-8">
+                        <a href="https://myjourneypage.ccbp.tech/" class="gradient-btn inline-block">Proceed <i class="fas fa-arrow-right ml-2"></i></a>
+                    </div>
+
+                    <div id="journeyCarousel" class="carousel slide" data-ride="carousel">
+                        <ol class="carousel-indicators">
+                            <li data-target="#journeyCarousel" data-slide-to="0" class="active"></li>
+                            <li data-target="#journeyCarousel" data-slide-to="1"></li>
+                            <li data-target="#journeyCarousel" data-slide-to="2"></li>
+                        </ol>
+                        <div class="carousel-inner">
+                            <div class="carousel-item active"><img src="https://res.cloudinary.com/djnscc5bg/image/upload/v1757342704/CDP-mY-JOURNEY-img2_xajizp.png" class="d-block w-100" alt="Journey Step 1"></div>
+                            <div class="carousel-item"><img src="https://res.cloudinary.com/djnscc5bg/image/upload/v1757342704/CDP-mY-JOURNEY-img3_p1ad0b.png" class="d-block w-100" alt="Journey Step 2"></div>
+                            <div class="carousel-item"><img src="https://res.cloudinary.com/djnscc5bg/image/upload/v1757342704/CDP-mY-JOURNEY-img4_nr00fg.png" class="d-block w-100" alt="Journey Step 3"></div>
+                        </div>
+                    </div>
+                    <div class="py-8 lg:py-12"><iframe class="w-full max-w-4xl mx-auto aspect-video rounded-xl shadow-lg" src="https://www.youtube.com/embed/yeFyfEFs0XQ?si=1-w1_ZGpoi-L15oo" title="YouTube video player" frameborder="0" allowfullscreen></iframe></div>
+                </div>
+            </section>
+
+            <section id="devgalaxy" class="section p-4 md:p-8">
+                <div class="container mx-auto">
+                    <h1 class="section-title">Dev Galaxy</h1>
+                    <p class="section-subtitle">Explore a universe of knowledge. All our courses are available here for you to browse and learn at your own pace.</p>
+                    <div class="text-center mb-8">
+                        <a href="https://devgalaxy.ccbp.tech/" class="gradient-btn inline-block">Explore Courses <i class="fas fa-arrow-right ml-2"></i></a>
+                    </div>
+
+                    <div id="devCarousel" class="carousel slide" data-ride="carousel">
+                        <ol class="carousel-indicators">
+                            <li data-target="#devCarousel" data-slide-to="0" class="active"></li>
+                            <li data-target="#devCarousel" data-slide-to="1"></li>
+                            <li data-target="#devCarousel" data-slide-to="2"></li>
+                        </ol>
+                        <div class="carousel-inner">
+                            <div class="carousel-item active"><img src="https://res.cloudinary.com/djnscc5bg/image/upload/v1757356455/dev-galaxy-1_vqi7vh.png" class="d-block w-100" alt="Dev Galaxy Feature 1"></div>
+                            <div class="carousel-item"><img src="https://res.cloudinary.com/djnscc5bg/image/upload/v1757356456/dev-galaxy-2_khblky.png" class="d-block w-100" alt="Dev Galaxy Feature 2"></div>
+                            <div class="carousel-item"><img src="https://res.cloudinary.com/djnscc5bg/image/upload/v1757356455/dev-galaxy-4_dkweyu.png" class="d-block w-100" alt="Dev Galaxy Feature 3"></div>
+                        </div>
+                    </div>
+                    <div class="py-8 lg:py-12"><iframe class="w-full max-w-4xl mx-auto aspect-video rounded-xl shadow-lg" src="https://www.youtube.com/embed/c2sNoY19N-8?si=iDUHmwpCdNElBsOJ" title="YouTube video player" frameborder="0" allowfullscreen></iframe></div>
+                </div>
+            </section>
+
+            <section id="Workshops" class="section p-4 md:p-8">
+                <div class="container mx-auto">
+                    <h1 class="section-title">Workshops</h1>
+                    <p class="section-subtitle">Learn, collaborate, and succeed with our hands-on, student-led workshops designed to give you practical, real-world skills.</p>
+                    <div class="max-w-2xl mx-auto">
+                        <div class="content-card overflow-hidden">
+                            <img src="https://logos-world.net/wp-content/uploads/2021/08/Amazon-Web-Services-AWS-Logo.png" alt="AWS Workshop" class="w-full h-48 object-contain p-4 bg-gray-100">
+                            <div class="p-6 text-center">
+                                <span class="inline-block bg-red-100 text-red-800 text-sm font-semibold px-3 py-1 rounded-full mb-3">3-Hour Workshop</span>
+                                <h3 class="font-heading text-2xl font-bold text-black">AWS Workshop</h3>
+                                <p class="font-body text-gray-600 mt-1">Conquer the Cloud with Hands-On Tools</p>
+                                <div class="text-left my-4 space-y-2 text-gray-700">
+                                    <div><strong>Start Date:</strong> 15-09-2025</div>
+                                    <div><strong>End Date:</strong> 21-09-2025</div>
+                                    <div><strong>Start Time:</strong> 10:00 AM</div>
+                                    <div><strong>Status:</strong> <span class="font-bold text-green-600">Coming soon</span></div>
+                                </div>
+                                <button id="view-details-btn" class="mt-2 w-full bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-lg hover:bg-gray-300 transition">View Details</button>
+                            </div>
+                        </div>
+                        <p class="text-center font-semibold text-gray-700 mt-8">"Exciting Workshops Ahead – Stay Tuned for Hands-On Learning and Innovation!"</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="WorkshopDetails" class="section p-4 md:p-8">
+                <div class="container mx-auto max-w-4xl">
+                    <button id="back-to-workshops-btn" class="mb-4 bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-lg hover:bg-gray-300 transition"><i class="fas fa-arrow-left mr-2"></i>Back to Workshops</button>
+                    <div class="content-card p-6 lg:p-8">
+                        <h1 class="section-title text-center mb-2">AWS Workshop Details</h1>
+                        <p class="text-center text-green-600 font-bold mb-4">Registration is Open!</p>
+                        <!-- Registration Form -->
+                        <div id="workshopRegistrationSection">
+                            <h2 class="text-2xl font-bold text-black mb-4">Register for this Workshop</h2>
+                            <form id="workshopRegisterForm">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <input type="text" name="name" required class="w-full px-4 py-2 bg-gray-100 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-indigo-500 transition" placeholder="Full Name">
+                                    <input type="email" name="email" required class="w-full px-4 py-2 bg-gray-100 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-indigo-500 transition" placeholder="Email Address">
+                                    <input type="tel" name="phone" required class="w-full px-4 py-2 bg-gray-100 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-indigo-500 transition" placeholder="Phone Number">
+                                    <input type="text" name="location" required class="w-full px-4 py-2 bg-gray-100 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-indigo-500 transition" placeholder="Location">
+                                </div>
+                                <button type="submit" class="w-full mt-4 gradient-btn">Register Now</button>
+                                <p id="workshopMessage" class="text-center mt-4 text-sm"></p>
+                            </form>
+                            <p class="text-xs text-center text-gray-500 mt-2">Your data will be used to facilitate communication and send certificates.</p>
+                        </div>
+                        <hr class="my-6">
+                        <!-- Other Details -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-center mb-6">
+                            <div>
+                                <h3 class="font-bold text-lg text-black">Hosted By</h3>
+                                <p class="text-gray-600">Pavan Kumar Reddy Lingam<br><span class="text-sm">4th Year, ECE - A Section</span></p>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg text-black">Organized By</h3>
+                                <p class="text-gray-600">O2O.agency</p>
+                            </div>
+                        </div>
+                        <hr class="my-6">
+                        <div>
+                            <h2 class="text-2xl font-bold text-black mb-3">Workshop Description</h2>
+                            <p class="text-gray-600 leading-relaxed">Dive deep into the world of cloud computing with our comprehensive AWS Workshop. This 3-hour, hands-on session is designed for beginners and intermediates alike. You will learn the fundamentals of AWS services, including EC2, S3, and Lambda, and deploy your first cloud-based application. Our goal is to demystify the cloud and provide you with the practical skills needed to start building scalable and resilient solutions on the world's leading cloud platform.</p>
+                        </div>
+                        <hr class="my-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                            <div>
+                                <h2 class="text-2xl font-bold text-black mb-3">Participant Benefits</h2>
+                                <ul class="list-disc list-inside text-gray-600 space-y-2">
+                                    <li>Gain hands-on experience with core AWS services.</li>
+                                    <li>Understand cloud architecture best practices.</li>
+                                    <li>Deploy a real-world application to the cloud.</li>
+                                    <li>Receive a certificate of completion from O2O.agency.</li>
+                                    <li>Boost your resume with in-demand cloud skills.</li>
+                                </ul>
+                            </div>
+                             <div>
+                                <h2 class="text-2xl font-bold text-black mb-3 text-center">Sample Certificate</h2>
+                                <img src="https://placehold.co/800x550/f0f0f0/333?text=Sample+Certificate\nOf+Completion" alt="Sample Certificate" class="rounded-lg shadow-md w-full">
+                            </div>
+                        </div>
+                        <hr class="my-6">
+                        <div>
+                            <h2 class="text-2xl font-bold text-black mb-4">Frequently Asked Questions (FAQs)</h2>
+                            <div class="space-y-4">
+                                <div>
+                                    <h3 class="font-bold text-lg text-black">Who is this workshop for?</h3>
+                                    <p class="text-gray-600">This workshop is ideal for students, aspiring developers, and anyone interested in learning about cloud computing. No prior AWS experience is required.</p>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-lg text-black">Is this workshop free?</h3>
+                                    <p class="text-gray-600">Yes, this workshop is completely free for all participants, aligning with CDP's mission to provide accessible education.</p>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-lg text-black">What do I need to bring?</h3>
+                                    <p class="text-gray-600">Please bring your own laptop with a modern web browser. We will provide all necessary software access and guidance during the session.</p>
+                                </div>
+                                 <div>
+                                    <h3 class="font-bold text-lg text-black">Will I get a certificate?</h3>
+                                    <p class="text-gray-600">Yes, all participants who complete the workshop will receive a digital certificate of completion from O2O.agency to showcase their new skills.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="PLACEMENTPRE" class="section p-4 md:p-8">
+                <div class="container mx-auto">
+                    <h1 class="section-title">Placement Preparation</h1>
+                    <p class="section-subtitle">Revise your skills and prepare for interviews to land your dream job. Explore our curated resources to get you started.</p>
+                    <div class="text-center mb-6">
+                        <a href="https://internplace.ccbp.tech/" class="gradient-btn inline-block">Get Started <i class="fas fa-arrow-right ml-2"></i></a>
+                    </div>
+                    <p class="text-center text-red-600 font-semibold d-lg-none mb-6">Note: Use DESKTOP MODE for the best experience on the destination page.</p>
+
+                    <div class="space-y-4 max-w-4xl mx-auto">
+                        <div class="content-card p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                            <div class="mb-3 sm:mb-0">
+                                <h3 class="font-bold text-black">Job Application Email Guide</h3>
+                                <p class="text-sm text-gray-500"><i class="fa-regular fa-hourglass-half"></i> 14 mins read</p>
+                            </div>
+                            <a href="https://unstop.com/blog/job-application-email" target="_blank" class="bg-indigo-100 text-indigo-700 px-4 py-2 rounded-full text-sm font-semibold hover:bg-indigo-200 transition">Read Here <i class="fa-regular fa-envelope ml-1"></i></a>
+                        </div>
+                        <div class="content-card p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                            <div class="mb-3 sm:mb-0">
+                                <h3 class="font-bold text-black">Cover Letter Format & Samples</h3>
+                                <p class="text-sm text-gray-500"><i class="fa-regular fa-hourglass-half"></i> 14 mins read</p>
+                            </div>
+                            <a href="https://unstop.com/blog/free-cover-letter-templates" target="_blank" class="bg-indigo-100 text-indigo-700 px-4 py-2 rounded-full text-sm font-semibold hover:bg-indigo-200 transition">Get Templates <i class="fa-regular fa-paste ml-1"></i></a>
+                        </div>
+                        <div class="content-card p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                            <div class="mb-3 sm:mb-0">
+                                <h3 class="font-bold text-black">Top 55 Front-End Interview Questions</h3>
+                                <p class="text-sm text-gray-500"><i class="fa-regular fa-hourglass-half"></i> 14 mins read</p>
+                            </div>
+                            <a href="https://unstop.com/blog/front-end-interview-questions" target="_blank" class="bg-indigo-100 text-indigo-700 px-4 py-2 rounded-full text-sm font-semibold hover:bg-indigo-200 transition">Start Practicing <i class="fa-solid fa-person-circle-question ml-1"></i></a>
+                        </div>
+                    </div>
+                    <div class="py-8 lg:py-12"><iframe class="w-full max-w-4xl mx-auto aspect-video rounded-xl shadow-lg" src="https://www.youtube.com/embed/LFR_IPyB9fU?si=Sbeu5CEMn4jVQghV" title="YouTube video player" frameborder="0" allowfullscreen></iframe></div>
+                </div>
+            </section>
+
+            <section id="PRACTICE" class="section p-4 md:p-8">
+                <div class="container mx-auto text-center">
+                    <h1 class="section-title">Practice Coding</h1>
+                    <p class="section-subtitle">Explore powerful online compilers to practice coding, build remarkable products, and sharpen your skills at your convenience.</p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
+                        <a href="https://onecompiler.com/" target="_blank" class="content-card p-6 flex flex-col items-center justify-center">
+                            <i class="fas fa-terminal text-4xl text-indigo-500 mb-3"></i>
+                            <span class="font-bold text-lg">Compiler - 1</span>
+                        </a>
+                        <a href="https://www.programiz.com/c-programming/online-compiler/" target="_blank" class="content-card p-6 flex flex-col items-center justify-center">
+                            <i class="fas fa-file-code text-4xl text-indigo-500 mb-3"></i>
+                            <span class="font-bold text-lg">Compiler - 2</span>
+                        </a>
+                        <a href="https://youtu.be/MlIzFUI1QGA?si=T3nhpzCgESGG3y4d" target="_blank" class="content-card p-6 flex flex-col items-center justify-center bg-indigo-500 text-white">
+                            <i class="fab fa-windows text-4xl mb-3"></i>
+                            <span class="font-bold text-lg">Compiler - 3 (VS Code)</span>
+                        </a>
+                        <a href="https://www.onlinegdb.com/online_c_compiler" target="_blank" class="content-card p-6 flex flex-col items-center justify-center">
+                            <i class="fas fa-laptop-code text-4xl text-indigo-500 mb-3"></i>
+                            <span class="font-bold text-lg">Compiler - 4</span>
+                        </a>
+                    </div>
+                    <p class="mt-6 font-semibold text-gray-700"><i class="fa-solid fa-triangle-exclamation text-yellow-500 mr-2"></i> We highly recommend VS Code (Compiler-3) for the best experience.</p>
+                    <div class="py-8 lg:py-12"><iframe class="w-full max-w-4xl mx-auto aspect-video rounded-xl shadow-lg" src="https://www.youtube.com/embed/uj2AyZ2DFE0?si=4qTZ-dR21FJ8nP1s" title="YouTube video player" frameborder="0" allowfullscreen></iframe></div>
+                </div>
+            </section>
+
+            <footer class="bg-white pt-8 pb-20 lg:pb-8">
+                <div class="container mx-auto text-center">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div>
+                            <h5 class="font-heading text-xl font-bold mb-3 text-black">Reach Us</h5>
+                            <a href="mailto:the.cdphub@gmail.com" class="text-gray-600 hover:text-indigo-500 transition"><i class="fas fa-envelope mr-2"></i>the.cdphub@gmail.com</a>
+                        </div>
+                        <div>
+                            <h5 class="font-heading text-xl font-bold mb-3 text-black">Quick Links</h5>
+                            <div class="space-y-2">
+                                <a class="text-gray-600 hover:text-indigo-500 transition block" href="#HOME">Home</a>
+                                <a class="text-gray-600 hover:text-indigo-500 transition block" href="https://myjourneypage.ccbp.tech/">MyJourney</a>
+                                <a class="text-gray-600 hover:text-indigo-500 transition block" href="https://devgalaxy.ccbp.tech/">DevGalaxy</a>
+                            </div>
+                        </div>
+                        <div>
+                            <h5 class="font-heading text-xl font-bold mb-3 text-black">Connect</h5>
+                            <div class="flex justify-center space-x-4 text-2xl">
+                                <a href="https://www.youtube.com/@FramixLabs" target="_blank" class="text-gray-600 hover:text-red-600 transition"><i class="fab fa-youtube"></i></a>
+                                <a href="https://www.instagram.com/cdptech2025" target="_blank" class="text-gray-600 hover:text-pink-500 transition"><i class="fab fa-instagram"></i></a>
+                                <a href="https://x.com/PavanLingam12?s=08" target="_blank" class="text-gray-600 hover:text-black transition"><i class="fa-brands fa-x-twitter"></i></a>
+                                <a href="https://www.linkedin.com/in/pavan-kumar-reddy-lingam/" target="_blank" class="text-gray-600 hover:text-blue-700 transition"><i class="fab fa-linkedin"></i></a>
+                                <a href="https://github.com/lpkumarreddy" target="_blank" class="text-gray-600 hover:text-gray-800 transition"><i class="fab fa-github"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border-t mt-8 pt-6">
+                        <p class="text-gray-500 text-sm">&copy; 2025 CDP, All rights reserved. Powered by <span class="font-bold">O2O.agency</span></p>
+                    </div>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('.section');
+            const navLinks = document.querySelectorAll('.iconsofnav, .iconsofnav992');
+            const desktopNav = document.querySelector('.desktop-nav');
+            const viewDetailsBtn = document.getElementById('view-details-btn');
+            const backToWorkshopsBtn = document.getElementById('back-to-workshops-btn');
+            const authScreen = document.getElementById('authScreen');
+            const websiteContent = document.getElementById('websiteContent');
+            const cdpRegisterForm = document.getElementById('cdpRegisterForm');
+            const authMessage = document.getElementById('authMessage');
+
+            // --- Initial Registration Logic ---
+            const showMainContent = () => {
+                authScreen.classList.add('hidden');
+                websiteContent.classList.remove('hidden');
+            };
+
+            if (localStorage.getItem('isCdpRegistered')) {
+                showMainContent();
+            } else {
+                authScreen.classList.remove('hidden');
+            }
+
+            cdpRegisterForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const submitButton = cdpRegisterForm.querySelector('button[type="submit"]');
+                submitButton.disabled = true;
+                authMessage.textContent = 'Registering...';
+                authMessage.style.color = 'blue';
+
+                const formData = new FormData(cdpRegisterForm);
+                const data = Object.fromEntries(formData.entries());
+
+                try {
+                    const response = await fetch('http://localhost:3000/register', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data),
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        localStorage.setItem('isCdpRegistered', 'true');
+                        authMessage.textContent = 'Success! Welcome to CDP.';
+                        authMessage.style.color = 'green';
+                        setTimeout(showMainContent, 1000);
+                    } else {
+                        authMessage.textContent = result.msg || 'Registration failed. Please try again.';
+                        authMessage.style.color = 'red';
+                        submitButton.disabled = false;
+                    }
+                } catch (error) {
+                    authMessage.textContent = 'Could not connect to the server. Please ensure the backend is running.';
+                    authMessage.style.color = 'red';
+                    submitButton.disabled = false;
+                }
+            });
+            
+            // --- Workshop Registration ---
+            const workshopRegisterForm = document.getElementById('workshopRegisterForm');
+            const workshopMessage = document.getElementById('workshopMessage');
+            
+            workshopRegisterForm.addEventListener('submit', async(e) => {
+                e.preventDefault();
+                const submitButton = workshopRegisterForm.querySelector('button[type="submit"]');
+                submitButton.disabled = true;
+                workshopMessage.textContent = 'Submitting...';
+                workshopMessage.style.color = 'blue';
+
+                const formData = new FormData(workshopRegisterForm);
+                const data = Object.fromEntries(formData.entries());
+
+                // Using the same endpoint as the main registration
+                 try {
+                    const response = await fetch('http://localhost:3000/register', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data),
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        workshopMessage.textContent = 'Thank you for registering for the workshop!';
+                        workshopMessage.style.color = 'green';
+                        workshopRegisterForm.reset(); // Clear the form
+                    } else {
+                        workshopMessage.textContent = result.msg || 'Registration failed. Please try again.';
+                        workshopMessage.style.color = 'red';
+                    }
+                } catch (error) {
+                    workshopMessage.textContent = 'Could not connect to the server.';
+                    workshopMessage.style.color = 'red';
+                } finally {
+                    submitButton.disabled = false;
+                }
+            });
+
+            // --- Navigation Logic ---
+            function updateActiveState(targetId) {
+                navLinks.forEach(link => {
+                    link.classList.toggle('active', link.getAttribute('href') === targetId);
+                });
+                sections.forEach(section => {
+                    section.classList.toggle('active', `#${section.id}` === targetId);
+                });
+            }
+            
+            function showSection(sectionId) {
+                sections.forEach(section => {
+                    section.classList.remove('active');
+                });
+                const targetSection = document.querySelector(sectionId);
+                if (targetSection) {
+                    targetSection.classList.add('active');
+                }
+                 window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetSectionId = link.getAttribute('href');
+                    updateActiveState(targetSectionId);
+                    showSection(targetSectionId);
+                });
+            });
+            
+            viewDetailsBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                showSection('#WorkshopDetails');
+            });
+            
+            backToWorkshopsBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                showSection('#Workshops');
+            });
+
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 30) {
+                   if(desktopNav) desktopNav.classList.add('scrolled');
+                } else {
+                   if(desktopNav) desktopNav.classList.remove('scrolled');
+                }
+            });
+
+            updateActiveState('#HOME');
+
+            $('.carousel').carousel({
+                interval: 3000,
+                ride: 'carousel'
+            });
+        });
+    </script>
+</body>
+
+</html>
+
