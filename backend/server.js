@@ -1,39 +1,39 @@
 const express = require('express');
-const sqlite3 = require('sqlite3').verbose();
+const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const path = require('path');
-const axios = require('axios'); // Import axios
+const axios = require('axios');
+require('dotenv').config(); // Use environment variables
 
 const app = express();
-const dbPath = path.resolve(__dirname, 'cdp_database.db');
 
 // --- PASTE YOUR GOOGLE SHEETS URL HERE ---
 const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbzpVe4RfxOzBk1vJWqx11e8SyoKsGQdytINSvg2Mpga0nM9mV7siipEhRx7Gsc_FZWL/exec';
 
-// --- SQLite Database Setup ---
-const db = new sqlite3.Database(dbPath, (err) => {
-    if (err) {
-        console.error('Error opening database:', err.message);
-    } else {
-        console.log('Connected to the SQLite database.');
-        db.run(`CREATE TABLE IF NOT EXISTS registrations (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            email TEXT NOT NULL UNIQUE,
-            phone TEXT NOT NULL,
-            location TEXT NOT NULL,
-            registeredAt TEXT NOT NULL
-        )`);
-    }
+// --- MongoDB Connection ---
+const MONGO_URI = process.env.MONGO_URI;
+
+mongoose.connect(MONGO_URI)
+    .then(() => console.log('Successfully connected to MongoDB Atlas.'))
+    .catch(err => console.error('Error connecting to MongoDB:', err.message));
+
+// --- User Schema and Model ---
+const RegistrationSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    phone: { type: String, required: true },
+    location: { type: String, required: true },
+    registeredAt: { type: Date, default: Date.now }
 });
+
+const Registration = mongoose.model('Registration', RegistrationSchema);
 
 // --- Middleware ---
 app.use(cors());
 app.use(bodyParser.json());
 
 // --- API Routes ---
-app.post('/register', (req, res) => {
+app.post('/register', async (req, res) => {
     try {
         const { name, email, phone, location } = req.body;
 
@@ -41,42 +41,33 @@ app.post('/register', (req, res) => {
             return res.status(400).json({ msg: 'Please enter all fields' });
         }
 
-        const registeredAt = new Date().toISOString();
-        const sql = `INSERT INTO registrations (name, email, phone, location, registeredAt) VALUES (?, ?, ?, ?, ?)`;
+        const existingUser = await Registration.findOne({ email: email });
+        if (existingUser) {
+            return res.status(409).json({ msg: 'This email address is already registered.' });
+        }
 
-        db.run(sql, [name, email, phone, location, registeredAt], async function(err) {
-            if (err) {
-                if (err.message.includes('UNIQUE constraint failed')) {
-                    return res.status(409).json({ msg: 'This email address is already registered.' });
-                }
-                return res.status(500).send('Server Error while writing to DB');
-            }
-            
-            const newUserId = this.lastID;
-            console.log(`User registered in DB with ID: ${newUserId}`);
+        const newUser = new Registration({ name, email, phone, location });
+        const savedUser = await newUser.save();
+        console.log(`User registered in DB with ID: ${savedUser._id}`);
 
-            // --- Send data to Google Sheets ---
-            if (GOOGLE_SHEET_URL && GOOGLE_SHEET_URL !== 'https://script.google.com/macros/s/AKfycbzpVe4RfxOzBk1vJWqx11e8SyoKsGQdytINSvg2Mpga0nM9mV7siipEhRx7Gsc_FZWL/exec') {
-                try {
-                    const sheetData = {
-                        userId: newUserId,
-                        name,
-                        email,
-                        phone,
-                        location
-                    };
-                    await axios.post(GOOGLE_SHEET_URL, sheetData);
-                    console.log(`Data for user ID ${newUserId} sent to Google Sheets.`);
-                } catch (sheetError) {
-                    console.error('Error sending data to Google Sheets:', sheetError.message);
-                    // We don't stop the registration process, just log the error
-                }
+        if (GOOGLE_SHEET_URL && GOOGLE_SHEET_URL !== 'PASTE_YOUR_WEB_APP_URL_HERE') {
+            try {
+                await axios.post(GOOGLE_SHEET_URL, {
+                    userId: savedUser._id.toString(),
+                    name,
+                    email,
+                    phone,
+                    location
+                });
+                console.log(`Data for user ID ${savedUser._id} sent to Google Sheets.`);
+            } catch (sheetError) {
+                console.error('Error sending data to Google Sheets:', sheetError.message);
             }
-            
-            res.status(201).json({ 
-                msg: 'Registration successful!', 
-                userId: newUserId 
-            });
+        }
+        
+        res.status(201).json({ 
+            msg: 'Registration successful!', 
+            userId: savedUser._id 
         });
 
     } catch (err) {
