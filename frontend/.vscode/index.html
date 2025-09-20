@@ -647,7 +647,7 @@
                 const data = Object.fromEntries(formData.entries());
 
                 try {
-                    const response = await fetch('http://localhost:3000/register', {
+                    const response = await fetch('https://cdp-backend-w7t5.onrender.com/register', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -690,7 +690,7 @@
 
                 // Using the same endpoint as the main registration
                  try {
-                    const response = await fetch('http://localhost:3000/register', {
+                    const response = await fetch('https://cdp-backend-w7t5.onrender.com/register', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
